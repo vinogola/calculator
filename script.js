@@ -5,9 +5,7 @@ let justEvaluated = false;
 let calculatorState = { firstNumber: null, operator: null, secondNumber: null };
 
 function updateDisplay(state) {
-  state.secondNumber
-    ? (display.textContent = state.secondNumber)
-    : (display.textContent = state.firstNumber);
+  display.textContent = state.secondNumber ?? state.firstNumber ?? 0;
 }
 
 function calculate(operator, a, b) {
@@ -29,6 +27,9 @@ buttonsContainer.addEventListener("click", (event) => {
   const wasjustEvaluated = justEvaluated;
   justEvaluated = false;
 
+  if (operator === "clear")
+    calculatorState = { firstNumber: null, operator: null, secondNumber: null };
+
   if (digit) {
     if (wasjustEvaluated) {
       calculatorState.firstNumber = digit;
@@ -44,26 +45,40 @@ buttonsContainer.addEventListener("click", (event) => {
   const firstNumber = Number(calculatorState.firstNumber);
   const secondNumber = Number(calculatorState.secondNumber);
 
-  switch (operator) {
-    case "+":
-    case "/":
-    case "-":
-    case "*":
-      calculatorState.operator = operator;
-      break;
+  if (!calculatorState.secondNumber) {
+    switch (operator) {
+      case "+":
+      case "/":
+      case "-":
+      case "*":
+        calculatorState.operator = operator;
+        break;
+    }
   }
 
-  if (calculatorState.secondNumber && operator === "=") {
-    justEvaluated = true;
-    calculatorState = {
-      firstNumber: calculate(
-        calculatorState.operator,
-        firstNumber,
-        secondNumber,
-      ),
-      operator: null,
-      secondNumber: null,
-    };
+  if (calculatorState.secondNumber && operator) {
+    if (operator === "=") {
+      justEvaluated = true;
+      calculatorState = {
+        firstNumber: calculate(
+          calculatorState.operator,
+          firstNumber,
+          secondNumber,
+        ),
+        operator: null,
+        secondNumber: null,
+      };
+    } else {
+      calculatorState = {
+        firstNumber: calculate(
+          calculatorState.operator,
+          firstNumber,
+          secondNumber,
+        ),
+        operator: operator,
+        secondNumber: null,
+      };
+    }
   }
 
   updateDisplay(calculatorState);
