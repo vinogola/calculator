@@ -1,8 +1,10 @@
 const display = document.getElementById("display");
 const buttonsContainer = document.getElementById("buttons");
 let justEvaluated = false;
+const snaky = "No Way!!";
 
-let calculatorState = { firstNumber: null, operator: null, secondNumber: null };
+let calculatorState;
+resetState();
 
 function updateDisplay(state) {
   display.textContent = state.secondNumber ?? state.firstNumber ?? 0;
@@ -17,8 +19,17 @@ function calculate(operator, a, b) {
     case "*":
       return a * b;
     case "/":
+      if (b === 0) return snaky;
       return a / b;
   }
+}
+
+function resetState() {
+  calculatorState = {
+    firstNumber: null,
+    operator: null,
+    secondNumber: null,
+  };
 }
 
 buttonsContainer.addEventListener("click", (event) => {
@@ -27,8 +38,9 @@ buttonsContainer.addEventListener("click", (event) => {
   const wasjustEvaluated = justEvaluated;
   justEvaluated = false;
 
-  if (operator === "clear")
-    calculatorState = { firstNumber: null, operator: null, secondNumber: null };
+  if (operator === "clear" || calculatorState.firstNumber === snaky) {
+    resetState();
+  }
 
   if (digit) {
     if (wasjustEvaluated) {
