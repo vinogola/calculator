@@ -7,7 +7,13 @@ let calculatorState;
 resetState();
 
 function updateDisplay(state) {
-  display.textContent = state.secondNumber ?? state.firstNumber ?? 0;
+  let displayValue = state.secondNumber ?? state.firstNumber ?? 0;
+
+  if (typeof displayValue === "number") {
+    displayValue = Math.round(displayValue * Math.pow(10, 6)) / Math.pow(10, 6);
+  }
+
+  display.textContent = displayValue;
 }
 
 function calculate(operator, a, b) {
