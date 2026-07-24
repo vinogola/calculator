@@ -6,6 +6,14 @@ const snaky = "No Way!!";
 let calculatorState;
 resetState();
 
+function resetState() {
+  calculatorState = {
+    firstNumber: null,
+    operator: null,
+    secondNumber: null,
+  };
+}
+
 function updateDisplay(state) {
   let displayValue = state.secondNumber ?? state.firstNumber ?? 0;
 
@@ -30,12 +38,18 @@ function calculate(operator, a, b) {
   }
 }
 
-function resetState() {
-  calculatorState = {
-    firstNumber: null,
-    operator: null,
-    secondNumber: null,
-  };
+function appendDigit(currentValue, digit) {
+  if (digit === ".") {
+    if (!currentValue) {
+      return "0.";
+    } else if (currentValue.includes(".")) {
+      return currentValue;
+    } else {
+      return currentValue + digit;
+    }
+  } else {
+    return (currentValue || "") + digit;
+  }
 }
 
 buttonsContainer.addEventListener("click", (event) => {
@@ -50,13 +64,17 @@ buttonsContainer.addEventListener("click", (event) => {
 
   if (digit) {
     if (wasjustEvaluated) {
-      calculatorState.firstNumber = digit;
+      calculatorState.firstNumber = appendDigit(null, digit);
     } else {
       calculatorState.operator
-        ? (calculatorState.secondNumber =
-            (calculatorState.secondNumber || "") + digit)
-        : (calculatorState.firstNumber =
-            (calculatorState.firstNumber || "") + digit);
+        ? (calculatorState.secondNumber = appendDigit(
+            calculatorState.secondNumber,
+            digit,
+          ))
+        : (calculatorState.firstNumber = appendDigit(
+            calculatorState.firstNumber,
+            digit,
+          ));
     }
   }
 
