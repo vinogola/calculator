@@ -24,6 +24,16 @@ function updateDisplay(state) {
   display.textContent = displayValue;
 }
 
+function mathOperator(operator) {
+  switch (operator) {
+    case "+":
+    case "/":
+    case "-":
+    case "*":
+      return operator;
+  }
+}
+
 function calculate(operator, a, b) {
   switch (operator) {
     case "+":
@@ -52,6 +62,23 @@ function appendDigit(currentValue, digit) {
   }
 }
 
+function removeDigit(currentValue) {
+  if (!currentValue) {
+    return null;
+  } else {
+    if (typeof currentValue === "number") {
+      currentValue = currentValue.toString();
+    }
+
+    let trimmedNumber = currentValue.slice(0, -1);
+
+    if (!trimmedNumber) {
+      return null;
+    }
+    return trimmedNumber;
+  }
+}
+
 buttonsContainer.addEventListener("click", (event) => {
   const digit = event.target.dataset.value;
   const operator = event.target.dataset.operator;
@@ -60,6 +87,16 @@ buttonsContainer.addEventListener("click", (event) => {
 
   if (operator === "clear" || calculatorState.firstNumber === snaky) {
     resetState();
+  }
+
+  if (operator === "backspace") {
+    calculatorState.operator
+      ? (calculatorState.secondNumber = removeDigit(
+          calculatorState.secondNumber,
+        ))
+      : (calculatorState.firstNumber = removeDigit(
+          calculatorState.firstNumber,
+        ));
   }
 
   if (digit) {
@@ -82,13 +119,8 @@ buttonsContainer.addEventListener("click", (event) => {
   const secondNumber = Number(calculatorState.secondNumber);
 
   if (!calculatorState.secondNumber) {
-    switch (operator) {
-      case "+":
-      case "/":
-      case "-":
-      case "*":
-        calculatorState.operator = operator;
-        break;
+    if (mathOperator(operator)) {
+      calculatorState.operator = operator;
     }
   }
 
@@ -104,7 +136,7 @@ buttonsContainer.addEventListener("click", (event) => {
         operator: null,
         secondNumber: null,
       };
-    } else {
+    } else if (mathOperator(operator)) {
       calculatorState = {
         firstNumber: calculate(
           calculatorState.operator,
