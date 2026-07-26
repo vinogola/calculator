@@ -1,11 +1,13 @@
 const display = document.getElementById("display");
 const buttonsContainer = document.getElementById("buttons");
+// Set after "=" so the next digit starts fresh instead of appending to the result.
 let justEvaluated = false;
-const snaky = "No Way!!";
+const snaky = "No Way!!"; // shown instead of Infinity/NaN on divide-by-zero
 
 let calculatorState;
 resetState();
 
+// null means "no value yet" - keeps that distinct from a real 0 or "".
 function resetState() {
   calculatorState = {
     firstNumber: null,
@@ -18,6 +20,7 @@ function updateDisplay(state) {
   let displayValue = state.secondNumber ?? state.firstNumber ?? 0;
 
   if (typeof displayValue === "number") {
+    // Rounds the displayed copy only; calculatorState keeps full precision.
     displayValue = Math.round(displayValue * Math.pow(10, 6)) / Math.pow(10, 6);
   }
 
@@ -34,6 +37,7 @@ function mathOperator(operator) {
   }
 }
 
+// Pure lookups: return the matching key value, or undefined if unhandled.
 function digitFromKey(key) {
   switch (key) {
     case "0":
@@ -107,6 +111,7 @@ function removeDigit(currentValue) {
   }
 }
 
+// Shared by the click and keydown listeners - the only place calculatorState is mutated.
 function handleInput(digit, operator) {
   const wasjustEvaluated = justEvaluated;
   justEvaluated = false;
@@ -144,6 +149,8 @@ function handleInput(digit, operator) {
   const firstNumber = Number(calculatorState.firstNumber);
   const secondNumber = Number(calculatorState.secondNumber);
 
+  // Requires firstNumber first, or the next digit would route into secondNumber
+  // and firstNumber would stay null.
   if (!calculatorState.secondNumber && calculatorState.firstNumber) {
     if (mathOperator(operator)) {
       calculatorState.operator = operator;
@@ -176,7 +183,6 @@ function handleInput(digit, operator) {
   }
 
   updateDisplay(calculatorState);
-  console.log(calculatorState);
 }
 
 buttonsContainer.addEventListener("click", (event) => {
@@ -186,18 +192,20 @@ buttonsContainer.addEventListener("click", (event) => {
   handleInput(digit, operator);
 });
 
+// keydown, not keypress - keypress never fires for Escape or Backspace.
 window.addEventListener("keydown", (event) => {
   const digit = digitFromKey(event.key);
   let operator;
 
+  // Handled here, not in operatorFromKey, since preventDefault needs the event object.
   if (event.key === "Escape") {
     event.preventDefault();
     operator = "clear";
   } else if (event.key === "Backspace") {
-    event.preventDefault();
+    event.preventDefault(); // stops the browser's back-navigation on Backspace
     operator = "backspace";
   } else if (event.key === "Enter") {
-    event.preventDefault();
+    event.preventDefault(); // stops Enter from also activating a focused button
     operator = "=";
   } else {
     operator = operatorFromKey(event.key);
