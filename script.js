@@ -34,6 +34,34 @@ function mathOperator(operator) {
   }
 }
 
+function digitFromKey(key) {
+  switch (key) {
+    case "0":
+    case "1":
+    case "2":
+    case "3":
+    case "4":
+    case "5":
+    case "6":
+    case "7":
+    case "8":
+    case "9":
+    case ".":
+      return key;
+  }
+}
+
+function operatorFromKey(key) {
+  switch (key) {
+    case "+":
+    case "-":
+    case "*":
+    case "/":
+    case "=":
+      return key;
+  }
+}
+
 function calculate(operator, a, b) {
   switch (operator) {
     case "+":
@@ -79,9 +107,7 @@ function removeDigit(currentValue) {
   }
 }
 
-buttonsContainer.addEventListener("click", (event) => {
-  const digit = event.target.dataset.value;
-  const operator = event.target.dataset.operator;
+function handleInput(digit, operator) {
   const wasjustEvaluated = justEvaluated;
   justEvaluated = false;
 
@@ -151,4 +177,31 @@ buttonsContainer.addEventListener("click", (event) => {
 
   updateDisplay(calculatorState);
   console.log(calculatorState);
+}
+
+buttonsContainer.addEventListener("click", (event) => {
+  const digit = event.target.dataset.value;
+  const operator = event.target.dataset.operator;
+
+  handleInput(digit, operator);
+});
+
+window.addEventListener("keydown", (event) => {
+  const digit = digitFromKey(event.key);
+  let operator;
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    operator = "clear";
+  } else if (event.key === "Backspace") {
+    event.preventDefault();
+    operator = "backspace";
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    operator = "=";
+  } else {
+    operator = operatorFromKey(event.key);
+  }
+
+  handleInput(digit, operator);
 });
