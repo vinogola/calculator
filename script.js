@@ -118,7 +118,7 @@ buttonsContainer.addEventListener("click", (event) => {
   const firstNumber = Number(calculatorState.firstNumber);
   const secondNumber = Number(calculatorState.secondNumber);
 
-  if (!calculatorState.secondNumber) {
+  if (!calculatorState.secondNumber && calculatorState.firstNumber) {
     if (mathOperator(operator)) {
       calculatorState.operator = operator;
     }
