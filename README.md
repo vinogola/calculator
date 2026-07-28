@@ -35,8 +35,9 @@ backspace, and full keyboard control alongside mouse clicks.
 
 - **State-driven rendering.** The display never gets written to directly — every input
   updates a single state object first, then one function renders whatever that state
-  currently holds. Keeping those two steps separate, in that order, avoided a whole class of
-  bugs where the display and the actual calculation could disagree.
+  currently holds. Keeping those two steps separate, in that order, fixed a bug where the
+  screen showed `12+5` while the calculation still had nothing, and stops the whole class of
+  bugs where the display and the actual calculation can disagree.
 - **Reusing one handler for two input types.** Clicking a button and pressing a key are
   different events, but once each one resolves down to a `digit`/`operator` value, they can
   both hand off to the exact same processing function. That meant adding keyboard support
