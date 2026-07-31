@@ -10,7 +10,8 @@ https://vinogola.github.io/calculator/
 ## Overview
 
 A standard four-function calculator that supports chained calculations, decimal input,
-backspace, and full keyboard control alongside mouse clicks.
+backspace, and full keyboard control alongside mouse clicks. Built with vanilla HTML, CSS,
+and JavaScript — no frameworks or libraries.
 
 ## How to Use
 
